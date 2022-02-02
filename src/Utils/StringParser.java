@@ -2,13 +2,18 @@ package Utils;
 
 public class StringParser {
     char[] data;
+    String raw;
     int index = 0;
 
     public StringParser(String data) {
+        this.raw = data;
         this.data = data.toCharArray();
     }
 
     public char peek() {
+        if(!available()) {
+            return '\0';
+        }
         return data[index];
     }
 
@@ -17,13 +22,13 @@ public class StringParser {
     }
 
     public String peek(int amount) {
-        if(amount < 0) {
+        if(amount < 0 || !available()) {
             return "";
         }
 
         StringBuilder line = new StringBuilder();
         for(int i = 0; i < amount; i++) {
-            line.append(data[index + amount]);
+            line.append(peekAt(i));
         }
 
         return line.toString();
@@ -31,16 +36,38 @@ public class StringParser {
 
     public char consume() {
         if(index >= data.length) {
-            return '\n';
+            return '\0';
         }
         return data[index++];
     }
 
-    public String consumeUntil(char delim) {
-        char current;
+    public String consume(int amount) {
+        if(index >= data.length) {
+            return "\0";
+        }
         StringBuilder str = new StringBuilder();
-        while((current = consume()) != delim) {
-            str.append(current);
+        for(int i = 0; i < amount; i++) {
+            str.append(consume());
+        }
+
+        return str.toString();
+    }
+
+    public boolean available() {
+        return index < data.length;
+    }
+
+    public String consumeUntil(char delim) {
+        StringBuilder str = new StringBuilder();
+        while(peek() != delim) {
+            if(peek() != '\0') {
+                str.append(consume());
+            } else {
+                break;
+            }
+        }
+        if(available()) {
+            consume();
         }
         return str.toString();
     }
@@ -56,13 +83,15 @@ public class StringParser {
     }
 
     public String consumeAllLine() {
-        String line = consumeUntil('\n');
-        return line; //This will remove \r TODO: Find a better way
+        return consumeUntil('\n'); //This will remove \r TODO: Find a better way
     }
 
     public String peekAllLine() {
-        String line = consumeUntil('\n');
-        return line; //This will remove \r TODO: Find a better way
+        return consumeUntil('\n'); //This will remove \r TODO: Find a better way
+    }
+
+    public boolean available(int amount) {
+        return (index + amount) < this.data.length;
     }
 
 }

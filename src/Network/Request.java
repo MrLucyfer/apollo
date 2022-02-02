@@ -42,13 +42,18 @@ public class Request {
             PrintWriter in = new PrintWriter(s.getOutputStream(), true);
             in.println(url.getUrl());
             BufferedReader out = new BufferedReader(new InputStreamReader(s.getInputStream()));
-            Response res = new Response(out.lines());
+            StringBuilder sb= new StringBuilder();
+            String line = "";
+            while ((line = out.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+            Response res = new Response(sb.toString(), url);
             s.close();
             return res;
 
         } catch(Exception e){
             e.printStackTrace();
-            Response res = new Response("");
+            Response res = new Response("", url);
             return res;
         }
     }

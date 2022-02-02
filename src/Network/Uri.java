@@ -7,6 +7,7 @@ public class Uri {
 
     public Uri(String url) {
         String[] components = url.split("/");
+
         authority = components[0];
         StringBuilder newPath = new StringBuilder("/");
         if(components.length > 1) {
@@ -17,6 +18,9 @@ public class Uri {
                 }
             }
         }
+        if(url.endsWith("/")) {
+            newPath.append("/");
+        }
         path = newPath.toString();
     }
 
@@ -26,5 +30,10 @@ public class Uri {
 
     public String getUrl() {
         return scheme + authority + path;
+    }
+
+    @Override
+    public String toString() {
+        return getUrl();
     }
 }

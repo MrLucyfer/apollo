@@ -26,6 +26,10 @@ public enum StatusCode {
         this.val = val;
     }
 
+    public int getNum() {
+        return this.val;
+    }
+
     public static StatusCode fromCode(int x) {
         return switch (x) {
             case 10 -> INPUT;
